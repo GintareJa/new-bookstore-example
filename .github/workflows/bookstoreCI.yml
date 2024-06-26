@@ -1,8 +1,8 @@
-name: Automated API tests usign CI piplines threw Postman
+name: Automated API tests using CI pipelines threw Postman
 
 on: push
 
-env:
+env: 
   POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
 
 jobs:
@@ -16,68 +16,26 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20.x' 
       - name: Install Newman and Newman report
         run: |
           npm install -g newman
           npm install -g newman-reporter-htmlextra
       - name: Fetch Postman collection
         run: |
-          curl -X GET "https://api.getpostman.com/collections/36023181-3069ffa6-f5e5-42df-8214-c8e6d3941a72" \
+          curl -X GET "https://api.getpostman.com/36023181-66272f83-2dfe-457b-9ff4-5a873ac6223e" \
             -H "X-Api-Key: ${POSTMAN_API_KEY}" > collection.json
         shell: bash
       - name: Fetch Postman environment
         run: |
-          curl -X GET "https://api.getpostman.com/environments/36023181-4c22d238-faac-4f80-9220-6e3f166f5ab2" \
-            -H "X-Api-Key: ${POSTMAN_API_KEY}" > environment.json
+          curl -X GET "https://api.getpostman.com/environments/36023181-35095463-447d-425c-8594-03c358dbc6fc" \
+            -H "X-Api-Key: ${POSTMAN_API_KEY}" > environment.json 
         shell: bash
       - name: Run API test
         run: |
           newman run collection.json -e environment.json --reporters cli,htmlextra --reporter-htmlextra-export report-${{ matrix.os }}.html
       - name: Upload report
         uses: actions/upload-artifact@v4
-        with:
+        with: 
           name: newman-report-${{ matrix.os }}
           path: report-${{ matrix.os }}.html
-
-# name: Automated API tests using CI pipelines threw Postman
-
-# on: push
-
-# env: 
-#   POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
-
-# jobs:
-#   automated-api-tests:
-#     strategy:
-#       matrix:
-#         os: [ubuntu-latest, windows-latest, macos-latest]
-#     runs-on: ${{ matrix.os }}
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Use Node.js
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: '20.x' 
-#       - name: Install Newman and Newman report
-#         run: |
-#           npm install -g newman
-#           npm install -g newman-reporter-htmlextra
-#       - name: Fetch Postman collection
-#         run: |
-#           curl -X GET "https://api.getpostman.com/36023181-66272f83-2dfe-457b-9ff4-5a873ac6223e" \
-#             -H "X-Api-Key: ${POSTMAN_API_KEY}" > collection.json
-#         shell: bash
-#       - name: Fetch Postman environment
-#         run: |
-#           curl -X GET "https://api.getpostman.com/environments/36023181-35095463-447d-425c-8594-03c358dbc6fc" \
-#             -H "X-Api-Key: ${POSTMAN_API_KEY}" > environment.json 
-#         shell: bash
-#       - name: Run API test
-#         run: |
-#           newman run collection.json -e environment.json --reporters cli,htmlextra --reporter-htmlextra-export report-${{ matrix.os }}.html
-#       - name: Upload report
-#         uses: actions/upload-artifact@v4
-#         with: 
-#           name: newman-report-${{ matrix.os }}
-#           path: report-${{ matrix.os }}.html
