@@ -1,4 +1,4 @@
-name: Automated API tests using CI pipelines through Postman
+name: Automated API tests usign CI piplines threw Postman
 
 on: push
 
@@ -23,7 +23,7 @@ jobs:
           npm install -g newman-reporter-htmlextra
       - name: Fetch Postman collection
         run: |
-          curl -X GET "https://api.getpostman.com/collections/36023181-8aa09bac-69b4-4aab-9c45-c291a9756a00" \
+          curl -X GET "https://api.getpostman.com/collections/36023181-66272f83-2dfe-457b-9ff4-5a873ac6223e" \
             -H "X-Api-Key: ${POSTMAN_API_KEY}" > collection.json
         shell: bash
       - name: Fetch Postman environment
@@ -31,12 +31,6 @@ jobs:
           curl -X GET "https://api.getpostman.com/environments/36023181-35095463-447d-425c-8594-03c358dbc6fc" \
             -H "X-Api-Key: ${POSTMAN_API_KEY}" > environment.json
         shell: bash
-      - name: Log fetched collection and environment
-        run: |
-          echo "Collection JSON:"
-          cat collection.json
-          echo "Environment JSON:"
-          cat environment.json
       - name: Run API test
         run: |
           newman run collection.json -e environment.json --reporters cli,htmlextra --reporter-htmlextra-export report-${{ matrix.os }}.html
